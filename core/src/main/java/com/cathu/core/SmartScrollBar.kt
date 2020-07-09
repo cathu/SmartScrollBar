@@ -4,13 +4,11 @@ import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
 import com.cathu.core.util.applyDimension
-import java.lang.Exception
 
 /**
  * Created by Zifeng.Hu on 2020/6/28
@@ -34,10 +32,6 @@ class SmartScrollBar : View {
     private var maxLength = 0
     private var currentLength = 0
 
-
-    //  <滑块长度>
-    private var scrollLength = 30f
-
     //  <方向>
     private var orientation: Int = 0
     private lateinit var orientationHandler:IOrientationStrategy
@@ -51,8 +45,13 @@ class SmartScrollBar : View {
     //  <滑块颜色>
     private var sliderColor: Int = Color.WHITE
 
-    //  <不满足滑动时，当前的状态> TODO 缺实现
-    private var noSliderState = 0
+    //  <不满足滑动时，当前的状态>  <0 ==> 消失（invisible） 1 ==> 消失（gone） 2 ==> 显示 >
+    private var cantScrollState = 0
+
+    //  <滑块显示时，当前的状态>   <0 ==> 一直显示 1==>[dismissTime] 毫秒后消失>
+    private var canScrollState = 0
+    //  <单位：ms>
+    private var dismissTime = 0
 
 
     constructor(context: Context?) : super(context)
@@ -75,7 +74,9 @@ class SmartScrollBar : View {
         sliderCorner =
             typeArray.getDimension(R.styleable.SmartScrollBar_smart_slider_corner, 0f).toInt()
         sliderColor = typeArray.getColor(R.styleable.SmartScrollBar_smart_slider_color, Color.WHITE)
-        noSliderState = typeArray.getInt(R.styleable.SmartScrollBar_smart_noSliderState, 0)
+        cantScrollState = typeArray.getInt(R.styleable.SmartScrollBar_smart_cant_scroll_style, 0)
+        canScrollState = typeArray.getInt(R.styleable.SmartScrollBar_smart_can_scroll_style, 0)
+        dismissTime = typeArray.getInt(R.styleable.SmartScrollBar_smart_dismiss_time, 1000)
         orientation = typeArray.getInt(R.styleable.SmartScrollBar_smart_orientation, VERTICAL)
         orientationHandler = IOrientationStrategy.createStrategy(orientation)
 
@@ -152,6 +153,7 @@ class SmartScrollBar : View {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 computeLength()
+                setInvisibleStyle()
                 postInvalidate()
             }
         })
@@ -175,9 +177,9 @@ class SmartScrollBar : View {
     private fun computeLength(){
         val totalLength = orientationHandler.computeRecyclerViewTotalLength(bindView!!)
 
-        if (totalLength > maxLength) {
+        //if (totalLength > maxLength) {
             maxLength = totalLength
-        }
+        //}
         currentLength = orientationHandler.computeRecyclerViewCurrentLength(bindView!!)
     }
 
@@ -190,21 +192,50 @@ class SmartScrollBar : View {
             bindView?.let {
                 maxLength = 0
                 computeLength()
+                setInvisibleStyle()
                 postInvalidate()
             }
         }
     }
 
 
+    /**
+     *  <设置不可滑动时，View的显示状态>
+     */
+    fun setInvisibleStyle(){
+        if (!orientationHandler.canScroll(bindView)){
+            when(cantScrollState){
+                //invisible
+                0-> visibility = View.INVISIBLE
+                //gone
+                1-> visibility = View.GONE
+            }
+        }else{
+            visibility = View.VISIBLE
+        }
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val scrollRect = orientationHandler.createSlider(maxLength,currentLength,width,height,bindView)
         canvas.drawRoundRect(
             scrollRect,
-            backgroundCorner.toFloat(),
-            backgroundCorner.toFloat(),
+            sliderCorner.toFloat(),
+            sliderCorner.toFloat(),
             paint
         )
+        setVisibleStyle()
+    }
+
+
+    /**
+     *  <设置显示状态下，View 的风格>
+     */
+    private fun setVisibleStyle() {
+        alpha = 1f
+        if (canScrollState == 1){
+            animate().alpha(0f).setDuration(dismissTime.toLong()).start()
+        }
     }
 
 

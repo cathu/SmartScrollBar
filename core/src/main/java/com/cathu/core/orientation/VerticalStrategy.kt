@@ -36,11 +36,18 @@ class VerticalStrategy:IOrientationStrategy {
             0f
         }
 
-        val scrollWidthRatio = if (maxLength == 0) {
+        var scrollWidthRatio = if (maxLength == 0) {
             1f
         } else {
             bindViewHeight / maxLength
         }
+        if (scrollWidthRatio>=1f){
+            scrollWidthRatio = 1f
+        }
         return RectF(0f, top, width.toFloat(), top + scrollWidthRatio * height)
+    }
+
+    override fun canScroll(bindView: RecyclerView?): Boolean {
+        return (bindView?.canScrollVertically(1) == true) or (bindView?.canScrollVertically(-1) == true)
     }
 }

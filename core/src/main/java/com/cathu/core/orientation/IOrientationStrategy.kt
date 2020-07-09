@@ -21,6 +21,8 @@ interface IOrientationStrategy {
         bindView: RecyclerView?
     ):RectF
 
+    fun canScroll(bindView: RecyclerView?): Boolean
+
     companion object{
 
         fun createStrategy(orientation: Int):IOrientationStrategy {

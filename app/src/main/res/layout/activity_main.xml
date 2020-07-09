@@ -39,12 +39,18 @@
 
     <com.cathu.core.SmartScrollBar
         android:id="@+id/scrollBar"
-        android:layout_width="20dp"
-        android:layout_height="match_parent"
+        android:layout_width="200dp"
+        android:layout_height="10dp"
+        android:background="#ACACAC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@null"
-        app:smart_orientation="vertical"
-        app:smart_slider_color="#E45F5F"
-        app:smart_enable_drag="true"/>
+        android:layout_marginBottom="45dp"
+        app:smart_can_scroll_style="always_show"
+        app:smart_cant_scroll_style="dismiss_invisible"
+        app:smart_orientation="horizontal"
+        app:smart_slider_color="#494949"
+        app:smart_background_corner="5dp"
+        app:smart_slider_corner="5dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

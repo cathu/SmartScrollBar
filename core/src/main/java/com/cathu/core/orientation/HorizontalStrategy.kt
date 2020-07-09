@@ -36,11 +36,18 @@ class HorizontalStrategy:IOrientationStrategy {
             0f
         }
 
-        val scrollWidthRatio = if (maxLength == 0) {
+        var scrollWidthRatio = if (maxLength == 0) {
             1f
         } else {
             bindViewWidth / maxLength
         }
+        if (scrollWidthRatio>=1f){
+            scrollWidthRatio = 1f
+        }
         return RectF(left, 0f, left + scrollWidthRatio * width, height.toFloat())
+    }
+
+    override fun canScroll(bindView: RecyclerView?): Boolean {
+        return (bindView?.canScrollHorizontally(1) == true) or (bindView?.canScrollHorizontally(-1) == true)
     }
 }
