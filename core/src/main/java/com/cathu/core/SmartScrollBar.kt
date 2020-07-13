@@ -10,6 +10,7 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
 import com.cathu.core.util.applyDimension
+import java.lang.Exception
 
 /**
  * Created by Zifeng.Hu on 2020/6/28
@@ -169,7 +170,11 @@ class SmartScrollBar : View {
         if (recyclerView.adapter == null) {
             throw IllegalStateException("请先绑定 recyclerView 的 Adapter")
         }
-        recyclerView.adapter!!.registerAdapterDataObserver(recyclerViewDataListener)
+        try {
+            recyclerView.adapter!!.registerAdapterDataObserver(recyclerViewDataListener)
+        }catch (e:Exception){
+
+        }
     }
 
 
