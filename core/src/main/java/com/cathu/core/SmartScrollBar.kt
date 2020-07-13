@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
@@ -145,7 +146,8 @@ class SmartScrollBar : View {
         bindDataChangedListener(recyclerView)
 
         if (this.bindView != null) {
-            throw IllegalStateException("该 ScrollBar 已经绑定了一个 RecyclerView，无法重复绑定！")
+            Log.e(TAG,"该 ScrollBar 已经绑定了一个 RecyclerView，无法重复绑定！")
+            return
         }
 
         this.bindView = recyclerView
