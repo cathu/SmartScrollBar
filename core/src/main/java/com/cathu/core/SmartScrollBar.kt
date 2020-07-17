@@ -132,6 +132,9 @@ class SmartScrollBar : View {
         if (backgroundCorner == 0) {
             return
         }
+        if (backgroundCorner>Math.min(width,height)/2){
+            backgroundCorner = Math.min(width,height)/2
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
@@ -142,7 +145,6 @@ class SmartScrollBar : View {
                         width,
                         height,
                         backgroundCorner.toFloat()
-                            .applyDimension(TypedValue.COMPLEX_UNIT_DIP, context)
                     )
                 }
             }
@@ -235,12 +237,12 @@ class SmartScrollBar : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val scrollRect =
-            if (sliderStyle == 1 && sliderLength != 0f) {
-                orientationHandler.createFixedSlider(sliderLength,width,height,bindView)
-            } else {
-                orientationHandler.createSlider(maxLength, currentLength, width, height, bindView)
-            }
+        val scrollRect = if (sliderStyle == 1 && sliderLength != 0f) {
+            orientationHandler.createFixedSlider(sliderLength, width, height, bindView)
+        } else {
+            orientationHandler.createSlider(maxLength, currentLength, width, height, bindView)
+        }
+
         canvas.drawRoundRect(
             scrollRect,
             sliderCorner.toFloat(),
