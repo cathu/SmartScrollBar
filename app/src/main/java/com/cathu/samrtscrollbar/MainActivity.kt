@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 		list.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
 
 		scrollBar.bindScrollView(list)
-
 		initViews()
 	}
 

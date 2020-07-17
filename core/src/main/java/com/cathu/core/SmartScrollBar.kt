@@ -7,6 +7,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
+import android.widget.LinearLayout
+import androidx.annotation.IntDef
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
 import com.cathu.core.util.applyDimension
@@ -35,8 +37,8 @@ class SmartScrollBar : View {
     private var currentLength = 0
 
     //  <方向>
-    private var orientation: Int = 0
-    private lateinit var orientationHandler:IOrientationStrategy
+    private var orientation: Int = VERTICAL
+    private lateinit var orientationHandler: IOrientationStrategy
 
     //  <背景圆角 只支持 Android 5.0>  <如果corner == 0，即表示无圆角>  <单位：dp>
     private var backgroundCorner = 0
@@ -47,11 +49,18 @@ class SmartScrollBar : View {
     //  <滑块颜色>
     private var sliderColor: Int = Color.WHITE
 
+    //  <滑块风格>  <0 ==> 倍数缩放 1==>固定大小 >
+    private var sliderStyle = 0
+
+    //  <滑块长度>  <0.0 - 1.0 为百分比，1 往后就是长度 (单位：dp) >
+    private var sliderLength = 0f
+
     //  <不满足滑动时，当前的状态>  <0 ==> 消失（invisible） 1 ==> 消失（gone） 2 ==> 显示 >
     private var cantScrollState = 0
 
     //  <滑块显示时，当前的状态>   <0 ==> 一直显示 1==>[dismissTime] 毫秒后消失>
     private var canScrollState = 0
+
     //  <单位：ms>
     private var dismissTime = 0
 
@@ -81,6 +90,8 @@ class SmartScrollBar : View {
         dismissTime = typeArray.getInt(R.styleable.SmartScrollBar_smart_dismiss_time, 1000)
         orientation = typeArray.getInt(R.styleable.SmartScrollBar_smart_orientation, VERTICAL)
         orientationHandler = IOrientationStrategy.createStrategy(orientation)
+        sliderStyle = typeArray.getInt(R.styleable.SmartScrollBar_smart_slider_style, 0)
+        sliderLength = typeArray.getFloat(R.styleable.SmartScrollBar_smart_slider_length, 0f)
 
         paint.color = sliderColor
         typeArray.recycle()
@@ -95,7 +106,7 @@ class SmartScrollBar : View {
         val heightSpecMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSpecSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        if (orientation == VERTICAL){
+        if (orientation == VERTICAL) {
             minWidth += minHeight
             minHeight = minWidth - minHeight
             minWidth -= minHeight
@@ -147,7 +158,7 @@ class SmartScrollBar : View {
         bindDataChangedListener(recyclerView)
 
         if (this.bindView != null) {
-            Log.e(TAG,"该 ScrollBar 已经绑定了一个 RecyclerView，无法重复绑定！")
+            Log.e(TAG, "该 ScrollBar 已经绑定了一个 RecyclerView，无法重复绑定！")
             return
         }
 
@@ -172,7 +183,7 @@ class SmartScrollBar : View {
         }
         try {
             recyclerView.adapter!!.registerAdapterDataObserver(recyclerViewDataListener)
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
@@ -181,11 +192,11 @@ class SmartScrollBar : View {
     /**
      *  <计算长度，包括总长度、现在的位置长度>
      */
-    private fun computeLength(){
+    private fun computeLength() {
         val totalLength = orientationHandler.computeRecyclerViewTotalLength(bindView!!)
 
         //if (totalLength > maxLength) {
-            maxLength = totalLength
+        maxLength = totalLength
         //}
         currentLength = orientationHandler.computeRecyclerViewCurrentLength(bindView!!)
     }
@@ -196,12 +207,12 @@ class SmartScrollBar : View {
      */
     private val recyclerViewDataListener = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
-            bindView?.let {
+            bindView?.postDelayed({
                 maxLength = 0
                 computeLength()
                 setInvisibleStyle()
                 postInvalidate()
-            }
+            }, 200)
         }
     }
 
@@ -209,22 +220,27 @@ class SmartScrollBar : View {
     /**
      *  <设置不可滑动时，View的显示状态>
      */
-    fun setInvisibleStyle(){
-        if (!orientationHandler.canScroll(bindView)){
-            when(cantScrollState){
+    fun setInvisibleStyle() {
+        if (!orientationHandler.canScroll(bindView)) {
+            when (cantScrollState) {
                 //invisible
-                0-> visibility = View.INVISIBLE
+                0 -> visibility = View.INVISIBLE
                 //gone
-                1-> visibility = View.GONE
+                1 -> visibility = View.GONE
             }
-        }else{
+        } else {
             visibility = View.VISIBLE
         }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val scrollRect = orientationHandler.createSlider(maxLength,currentLength,width,height,bindView)
+        val scrollRect =
+            if (sliderStyle == 1 && sliderLength != 0f) {
+                orientationHandler.createFixedSlider(sliderLength,width,height,bindView)
+            } else {
+                orientationHandler.createSlider(maxLength, currentLength, width, height, bindView)
+            }
         canvas.drawRoundRect(
             scrollRect,
             sliderCorner.toFloat(),
@@ -240,14 +256,14 @@ class SmartScrollBar : View {
      */
     private fun setVisibleStyle() {
         alpha = 1f
-        if (canScrollState == 1){
+        if (canScrollState == 1) {
             animate().alpha(0f).setDuration(dismissTime.toLong()).start()
         }
     }
 
 
-    companion object{
-        const val VERTICAL = 0
-        const val HORIZONTAL = 1
+    companion object {
+        const val VERTICAL = LinearLayout.VERTICAL
+        const val HORIZONTAL = LinearLayout.HORIZONTAL
     }
 }

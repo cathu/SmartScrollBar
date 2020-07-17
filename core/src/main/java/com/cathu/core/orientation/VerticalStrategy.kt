@@ -17,6 +17,10 @@ class VerticalStrategy:IOrientationStrategy {
         return recyclerView.computeVerticalScrollOffset()
     }
 
+    override fun computeRecyclerViewExtent(recyclerView: RecyclerView): Int {
+        return recyclerView.computeVerticalScrollExtent()
+    }
+
     override fun createSlider(
         maxLength: Int,
         currentLength: Int,
@@ -45,6 +49,29 @@ class VerticalStrategy:IOrientationStrategy {
             scrollWidthRatio = 1f
         }
         return RectF(0f, top, width.toFloat(), top + scrollWidthRatio * height)
+    }
+
+    override fun createFixedSlider(
+        sliderLength: Float,
+        width: Int,
+        height: Int,
+        bindView: RecyclerView?
+    ): RectF {
+
+        val sliderHeight = if (sliderLength<=1.0){
+            height * sliderLength
+        }else{
+            sliderLength
+        }
+
+        val top = if (bindView == null || computeRecyclerViewTotalLength(bindView) == 0) {
+            0f
+        } else {
+            (computeRecyclerViewCurrentLength(bindView).toFloat() / (computeRecyclerViewTotalLength(bindView) - computeRecyclerViewExtent(bindView))) * (height - sliderHeight)
+        }
+
+
+        return RectF(0f,top,width.toFloat(),top+sliderHeight)
     }
 
     override fun canScroll(bindView: RecyclerView?): Boolean {

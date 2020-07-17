@@ -13,6 +13,8 @@ interface IOrientationStrategy {
 
     fun computeRecyclerViewCurrentLength(recyclerView: RecyclerView): Int
 
+    fun computeRecyclerViewExtent(recyclerView: RecyclerView):Int
+
     fun createSlider(
         maxLength: Int,
         currentLength: Int,
@@ -20,6 +22,11 @@ interface IOrientationStrategy {
         height: Int,
         bindView: RecyclerView?
     ):RectF
+
+    fun createFixedSlider(sliderLength:Float ,
+                          width: Int,
+                          height: Int,
+                          bindView: RecyclerView?):RectF
 
     fun canScroll(bindView: RecyclerView?): Boolean
 

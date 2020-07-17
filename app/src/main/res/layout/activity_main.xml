@@ -51,6 +51,8 @@
         app:smart_orientation="horizontal"
         app:smart_slider_color="#494949"
         app:smart_background_corner="5dp"
-        app:smart_slider_corner="5dp"/>
+        app:smart_slider_corner="5dp"
+        app:smart_slider_style="固定大小"
+        app:smart_slider_length="0.5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
