@@ -48,11 +48,11 @@
         android:layout_marginBottom="45dp"
         app:smart_can_scroll_style="always_show"
         app:smart_cant_scroll_style="dismiss_invisible"
-        app:smart_orientation="horizontal"
+        app:smart_orientation="vertical"
         app:smart_slider_color="#494949"
-        app:smart_background_corner="5dp"
-        app:smart_slider_corner="5dp"
+        app:smart_background_corner="10dp"
+        app:smart_slider_corner="10dp"
         app:smart_slider_style="固定大小"
-        app:smart_slider_length="0.5"/>
+        app:smart_slider_length="50%"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
