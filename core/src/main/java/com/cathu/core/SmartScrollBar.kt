@@ -91,7 +91,11 @@ class SmartScrollBar : View {
         orientation = typeArray.getInt(R.styleable.SmartScrollBar_smart_orientation, VERTICAL)
         orientationHandler = IOrientationStrategy.createStrategy(orientation)
         sliderStyle = typeArray.getInt(R.styleable.SmartScrollBar_smart_slider_style, 0)
-        sliderLength = typeArray.getFloat(R.styleable.SmartScrollBar_smart_slider_length, 0f)
+        sliderLength = try {
+            typeArray.getFraction(R.styleable.SmartScrollBar_smart_slider_length, 1,1,0f)
+        }catch (e:Exception){
+            typeArray.getDimension(R.styleable.SmartScrollBar_smart_slider_length, 0f)
+        }
 
         paint.color = sliderColor
         typeArray.recycle()
