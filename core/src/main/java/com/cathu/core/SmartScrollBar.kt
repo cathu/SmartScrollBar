@@ -5,13 +5,11 @@ import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import android.widget.LinearLayout
-import androidx.annotation.IntDef
+import androidx.core.graphics.toRect
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
-import com.cathu.core.util.applyDimension
 import java.lang.Exception
 
 /**
@@ -64,6 +62,13 @@ class SmartScrollBar : View {
     //  <单位：ms>
     private var dismissTime = 0
 
+    //  <是否支持拖拽>
+    private var enableDrag = false
+
+    private val gestureDetector by lazy { GestureDetector(context, gestureListener) }
+
+    private val sliderRegion = Region()
+
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
@@ -92,10 +97,11 @@ class SmartScrollBar : View {
         orientationHandler = IOrientationStrategy.createStrategy(orientation)
         sliderStyle = typeArray.getInt(R.styleable.SmartScrollBar_smart_slider_style, 0)
         sliderLength = try {
-            typeArray.getFraction(R.styleable.SmartScrollBar_smart_slider_length, 1,1,0f)
-        }catch (e:Exception){
+            typeArray.getFraction(R.styleable.SmartScrollBar_smart_slider_length, 1, 1, 0f)
+        } catch (e: Exception) {
             typeArray.getDimension(R.styleable.SmartScrollBar_smart_slider_length, 0f)
         }
+        enableDrag = typeArray.getBoolean(R.styleable.SmartScrollBar_smart_enable_drag,false)
 
         paint.color = sliderColor
         typeArray.recycle()
@@ -136,8 +142,8 @@ class SmartScrollBar : View {
         if (backgroundCorner == 0) {
             return
         }
-        if (backgroundCorner>Math.min(width,height)/2){
-            backgroundCorner = Math.min(width,height)/2
+        if (backgroundCorner > Math.min(width, height) / 2) {
+            backgroundCorner = Math.min(width, height) / 2
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             clipToOutline = true
@@ -253,6 +259,7 @@ class SmartScrollBar : View {
             sliderCorner.toFloat(),
             paint
         )
+        sliderRegion.set(scrollRect.toRect())
         setVisibleStyle()
     }
 
@@ -265,6 +272,90 @@ class SmartScrollBar : View {
         if (canScrollState == 1) {
             animate().alpha(0f).setDuration(dismissTime.toLong()).start()
         }
+    }
+
+
+    /**
+     *  <触摸事件>
+     */
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return gestureDetector.onTouchEvent(event)
+    }
+
+
+    /**
+     *  <手势监听>
+     */
+    private val gestureListener = object : GestureDetector.SimpleOnGestureListener() {
+
+        private var isTouched: Boolean? = null
+        private var firstRatio: Float? = null
+        override fun onDown(e: MotionEvent): Boolean {
+            if (e.action == MotionEvent.ACTION_DOWN) {
+                isTouched = null
+                firstRatio = null
+            }
+            return enableDrag
+        }
+
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            //Log.e(TAG,"onScroll: e1:(${e1.x.toInt()},${e1.y.toInt()}),e2:(${e2.x.toInt()},${e2.y.toInt()}),action:${e1.action},${e2.action}")
+            if (isTouched == null) {
+                isTouched = sliderRegion.contains(e1.x.toInt(), e1.y.toInt())
+            }
+
+            if (isTouched == true) {
+                //Log.e(TAG,"触摸到Slider")
+                //  <warn:不能使用[distanceX/Y]>
+                bindView?.let {
+                    val barLength: Int
+                    var ratio = 0f
+                    val offsetRatio:Float
+                    if (orientation == VERTICAL) {
+                        barLength = height - sliderRegion.bounds.height()
+                        if (firstRatio == null) {
+                            firstRatio = sliderRegion.bounds.top.toFloat() / barLength
+                        }
+                        offsetRatio = (e2.y - e1.y) / barLength
+                    } else {
+                        barLength = width - sliderRegion.bounds.width()
+                        if (firstRatio == null) {
+                            firstRatio = sliderRegion.bounds.left.toFloat() / barLength
+                        }
+                        offsetRatio = (e2.x - e1.x) / barLength
+                    }
+
+                    ratio = (firstRatio ?: 0f) + offsetRatio
+                    if (ratio <= 0) {
+                        ratio = 0f
+                    }
+                    if (ratio >= 1f) {
+                        ratio = 1f
+                    }
+                    //Log.e("==>ratio",ratio.toString())
+                    scrollRecyclerView(ratio)
+                }
+                return true
+            }
+            return false
+        }
+    }
+
+
+    /**
+     *  <滚动 RecyclerView>
+     */
+    fun scrollRecyclerView(ratio: Float) {
+        bindView?.adapter?:return
+        bindView?.layoutManager?:return
+        val position = bindView?.adapter!!.itemCount - 1
+        //Log.e("==>position",(position * ratio).toInt().toString())
+        bindView?.layoutManager!!.scrollToPosition(((position * ratio).toInt()))
     }
 
 

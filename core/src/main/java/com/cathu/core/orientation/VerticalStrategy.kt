@@ -1,6 +1,9 @@
 package com.cathu.core.orientation
 
 import android.graphics.RectF
+import android.util.Log
+import android.view.View
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.Exception
 
@@ -69,8 +72,6 @@ class VerticalStrategy:IOrientationStrategy {
         } else {
             (computeRecyclerViewCurrentLength(bindView).toFloat() / (computeRecyclerViewTotalLength(bindView) - computeRecyclerViewExtent(bindView))) * (height - sliderHeight)
         }
-
-
         return RectF(0f,top,width.toFloat(),top+sliderHeight)
     }
 

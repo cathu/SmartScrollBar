@@ -34,5 +34,7 @@
         </attr>
         <!-- ✅  scrollBar 多少毫秒(ms)后消失 -->
         <attr name="smart_dismiss_time" format="integer"/>
+        <!-- -->
+        <attr name="smart_enable_drag" format="boolean" />
     </declare-styleable>
 </resources>

@@ -1,6 +1,7 @@
 package com.cathu.core.orientation
 
 import android.graphics.RectF
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.Exception
 
@@ -68,8 +69,6 @@ class HorizontalStrategy:IOrientationStrategy {
         } else {
             (computeRecyclerViewCurrentLength(bindView).toFloat() / (computeRecyclerViewTotalLength(bindView) - computeRecyclerViewExtent(bindView))) * (width - sliderWidth)
         }
-
-
         return RectF(left,0f,left + sliderWidth,height.toFloat())
     }
 
