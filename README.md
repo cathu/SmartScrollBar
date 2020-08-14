@@ -30,9 +30,9 @@ dependencies {
         </attr>
         <!-- ✅  background 圆角（只支持 Android 5.0 以上的版本） -->
         <attr name="smart_background_corner" format="dimension"/>
-        <!-- ✅  scroll 圆角 -->
+        <!-- ✅  sliderBar 圆角 -->
         <attr name="smart_slider_corner" format="dimension"/>
-        <!-- ✅  scroll 颜色 -->
+        <!-- ✅  sliderBar 颜色 -->
         <attr name="smart_slider_color" format="color"/>
         <!-- ✅  RecyclerView 无法滑动时，scroll 的状态 -->
         <attr name="smart_cant_scroll_style" format="enum">
@@ -54,7 +54,9 @@ dependencies {
             <enum name="always_show" value="0"/>
             <enum name="dismiss_awhile" value="1"/>
         </attr>
-        <!-- ✅  scrollBar 多少毫秒(ms)后消失 -->
+        <!-- ✅  sliderBar 多少毫秒(ms)后消失 -->
         <attr name="smart_dismiss_time" format="integer"/>
+        <!-- ✅ 支持拖拽 sliderBar -->
+        <attr name="smart_enable_drag" format="boolean" />
     </declare-styleable>
 ```

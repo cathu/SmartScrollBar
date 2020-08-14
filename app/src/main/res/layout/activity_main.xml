@@ -53,6 +53,7 @@
         app:smart_background_corner="10dp"
         app:smart_slider_corner="10dp"
         app:smart_slider_style="固定大小"
-        app:smart_slider_length="50%"/>
+        app:smart_slider_length="50%"
+        app:smart_enable_drag="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
