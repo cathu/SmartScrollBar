@@ -16,7 +16,7 @@ allprojects {
 **Step 2.** 添加依赖
 ```kotlin
 dependencies {
-	implementation 'com.github.cathu:SamrtScrollBar:0.0.4'
+	implementation 'com.github.cathu:SamrtScrollBar:0.0.5'
 }
 ```
 
@@ -59,4 +59,22 @@ dependencies {
         <!-- ✅ 支持拖拽 sliderBar -->
         <attr name="smart_enable_drag" format="boolean" />
     </declare-styleable>
+```
+
+```xml
+<com.cathu.core.SmartScrollBar
+        android:id="@+id/scrollBar"
+        android:layout_width="40dp"
+        android:layout_height="200dp"
+        android:background="#ACACAC"
+        android:layout_marginBottom="45dp"
+        app:smart_can_scroll_style="always_show"
+        app:smart_cant_scroll_style="dismiss_invisible"
+        app:smart_orientation="vertical"
+        app:smart_slider_color="#494949"
+        app:smart_background_corner="10dp"
+        app:smart_slider_corner="10dp"
+        app:smart_slider_style="固定大小"
+        app:smart_slider_length="50%"	<!-- 支持百分比/dp -->
+        app:smart_enable_drag="true"/>
 ```
