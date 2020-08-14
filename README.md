@@ -1,4 +1,7 @@
 # SamrtScrollBar
+[![](https://jitpack.io/v/cathu/SamrtScrollBar.svg)](https://jitpack.io/#cathu/SamrtScrollBar)
+[![](https://img.shields.io/badge/%E5%8D%9A%E5%AE%A2-Cathu-brightgreen)](https://blog.csdn.net/catzifeng)
+
 Android ScrollBar,自定义性极强的滚动条。
 
 ## 导入项目
