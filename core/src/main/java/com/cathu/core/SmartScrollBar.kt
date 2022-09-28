@@ -66,7 +66,9 @@ class SmartScrollBar : View {
     //  <是否支持拖拽>
     private var enableDrag = false
 
-    private val gestureDetector by lazy { GestureDetector(context, gestureListener) }
+    private val gestureDetector by lazy { GestureDetector(context, gestureListener).apply {
+        setIsLongpressEnabled(false)
+    } }
 
     private val sliderRegion = Region()
 
