@@ -68,6 +68,7 @@ class SmartScrollBar : View {
 
     private val gestureDetector by lazy { GestureDetector(context, gestureListener).apply {
         setIsLongpressEnabled(false)
+        this::class.java.getDeclaredField("mTouchSlopSquare").apply { isAccessible = true }.set(this,0)
     } }
 
     private val sliderRegion = Region()
