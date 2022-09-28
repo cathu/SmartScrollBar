@@ -1,5 +1,8 @@
 package com.cathu.samrtscrollbar
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.RectF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 		list.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
 
 		scrollBar.bindScrollView(list)
+		scrollBar.setCustomBackground({w,h->
+			RectF(10f,0f, (w-10).toFloat(), h.toFloat())
+		},20f, Color.BLUE)
 		initViews()
 	}
 

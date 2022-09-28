@@ -41,7 +41,6 @@
         android:id="@+id/scrollBar"
         android:layout_width="40dp"
         android:layout_height="200dp"
-        android:background="#ACACAC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -53,7 +52,7 @@
         app:smart_background_corner="10dp"
         app:smart_slider_corner="10dp"
         app:smart_slider_style="固定大小"
-        app:smart_slider_length="50%"
+        app:smart_slider_length="20%"
         app:smart_enable_drag="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

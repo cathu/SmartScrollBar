@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
+import androidx.annotation.ColorInt
 import androidx.core.graphics.toRect
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +66,18 @@ class SmartScrollBar : View {
 
     //  <是否支持拖拽>
     private var enableDrag = false
+
+    //  <自定义背景 rect>
+    private val customBgRectF = RectF()
+
+    //  <自定义背景圆角>
+    private var customBgCorner = 0f
+
+    //  <背景 paint>
+    private val customBgPaint by lazy { Paint().apply {
+        style = Paint.Style.FILL
+        isAntiAlias = true
+    } }
 
     private val gestureDetector by lazy { GestureDetector(context, gestureListener).apply {
         setIsLongpressEnabled(false)
@@ -251,6 +264,12 @@ class SmartScrollBar : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        //  1. 绘制自定义背景
+        if (!customBgRectF.isEmpty){
+            canvas.drawRoundRect(customBgRectF,customBgCorner,customBgCorner,customBgPaint)
+        }
+
+        //  2. 绘制 slider
         val scrollRect = if (sliderStyle == 1 && sliderLength != 0f) {
             orientationHandler.createFixedSlider(sliderLength, width, height, bindView)
         } else {
@@ -264,9 +283,19 @@ class SmartScrollBar : View {
             paint
         )
         sliderRegion.set(scrollRect.toRect())
+
+        //  3. 设置 slider 是否消失
         setVisibleStyle()
     }
 
+
+    fun setCustomBackground(holderWH: (Int,Int) -> RectF, corner: Float, @ColorInt color: Int) {
+        post {
+            this.customBgRectF.set(holderWH.invoke(width,height))
+            this.customBgCorner = corner
+            customBgPaint.color = color
+        }
+    }
 
     /**
      *  <设置显示状态下，View 的风格>
