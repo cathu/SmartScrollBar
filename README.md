@@ -81,3 +81,8 @@ dependencies {
         app:smart_slider_length="50%"	<!-- 支持百分比/dp -->
         app:smart_enable_drag="true"/>
 ```
+
+支持自定义背景：
+```scrollBar.setCustomBackground(holderWH: (Int,Int) -> RectF, corner: Float, @ColorInt color: Int)```
+holderWH 会返回宽高，利用宽高你可以创建一个 RectF 对象并返回给 SmartScrollBar，他会构建一个长方形背景。利用这个你可以实现背景的宽度比滑块的宽度小的场景。
+
