@@ -19,7 +19,7 @@ allprojects {
 **Step 2.** 添加依赖
 ```kotlin
 dependencies {
-	implementation 'com.github.cathu:SamrtScrollBar:0.0.6'
+	implementation 'com.github.cathu:SamrtScrollBar:0.0.7'
 }
 ```
 
