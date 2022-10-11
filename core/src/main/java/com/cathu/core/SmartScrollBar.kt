@@ -376,7 +376,7 @@ class SmartScrollBar : View {
         if (orientation == VERTICAL){
             bindView!!.scrollBy(0, ((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.height) * (offsetRatio - lastRatio)).roundToInt())
         }else{
-            bindView!!.scrollBy(((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.width) * (offsetRatio - lastRatio)).toInt(),0)
+            bindView!!.scrollBy(((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.width) * (offsetRatio - lastRatio)).roundToInt(),0)
         }
         lastRatio = offsetRatio
     }
