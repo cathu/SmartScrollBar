@@ -4,6 +4,9 @@
 
 Android ScrollBar,自定义性极强的滚动条。
 
+## 效果展示
+<img src="https://github.com/cathu/SamrtScrollBar/blob/master/screen/screen-shot-01.gif" width="300"/><br/>
+
 ## 导入项目
 
 **Step 1.** 添加 jitpack 仓库：
