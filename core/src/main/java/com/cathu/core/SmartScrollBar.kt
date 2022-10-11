@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
 import java.lang.Exception
+import kotlin.math.roundToInt
 
 /**
  * Created by Zifeng.Hu on 2020/6/28
@@ -318,7 +319,6 @@ class SmartScrollBar : View {
 
     private var lastRatio = 0f
     private var isTouched: Boolean? = null
-    private var firstRatio: Float? = null
 
     /**
      *  <手势监听>
@@ -330,7 +330,6 @@ class SmartScrollBar : View {
             if (e.action == MotionEvent.ACTION_DOWN) {
                 lastRatio = 0f
                 isTouched = null
-                firstRatio = null
             }
             return enableDrag
         }
@@ -351,31 +350,14 @@ class SmartScrollBar : View {
                 //  <warn:不能使用[distanceX/Y]>
                 bindView?.let {
                     val barLength: Int
-                    var ratio = 0f
                     val offsetRatio:Float
                     if (orientation == VERTICAL) {
                         barLength = height - sliderRegion.bounds.height()
-                        if (firstRatio == null) {
-                            firstRatio = sliderRegion.bounds.top.toFloat() / barLength
-                        }
                         offsetRatio = (e2.y - e1.y) / barLength
                     } else {
                         barLength = width - sliderRegion.bounds.width()
-                        if (firstRatio == null) {
-                            firstRatio = sliderRegion.bounds.left.toFloat() / barLength
-                        }
                         offsetRatio = (e2.x - e1.x) / barLength
                     }
-
-                    /*ratio = (firstRatio ?: 0f) + offsetRatio
-                    if (ratio <= 0) {
-                        ratio = 0f
-                    }
-                    if (ratio >= 1f) {
-                        ratio = 1f
-                    }*/
-                    //Log.e("==>ratio",ratio.toString())
-                    //scrollRecyclerView(ratio)
                     scrollRecyclerView2(offsetRatio)
                 }
                 return true
@@ -388,27 +370,13 @@ class SmartScrollBar : View {
     /**
      *  <滚动 RecyclerView>
      */
-    @Deprecated("该方法会有Bug，且效果不佳，但是是最开始的思路，保留仅供参考，若干版本后会删除")
-    private fun scrollRecyclerView(ratio: Float) {
-        bindView?.adapter?:return
-        bindView?.layoutManager?:return
-        val position = bindView?.adapter!!.itemCount - 1
-        //Log.e("==>position",(position * ratio).toInt().toString())
-        //bindView?.layoutManager!!.scrollToPosition(((position * ratio).toInt()))
-        (bindView?.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(((position * ratio).toInt()),0)
-    }
-
-
-    /**
-     *  <滚动 RecyclerView>
-     */
     private fun scrollRecyclerView2(offsetRatio: Float) {
         bindView?.adapter?:return
         bindView?.layoutManager?:return
         if (orientation == VERTICAL){
-            bindView!!.scrollBy(0, (orientationHandler.computeRecyclerViewTotalLength(bindView!!) * (offsetRatio - lastRatio)).toInt())
+            bindView!!.scrollBy(0, ((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.height) * (offsetRatio - lastRatio)).roundToInt())
         }else{
-            bindView!!.scrollBy((orientationHandler.computeRecyclerViewTotalLength(bindView!!) * (offsetRatio - lastRatio)).toInt(),0)
+            bindView!!.scrollBy(((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.width) * (offsetRatio - lastRatio)).toInt(),0)
         }
         lastRatio = offsetRatio
     }
