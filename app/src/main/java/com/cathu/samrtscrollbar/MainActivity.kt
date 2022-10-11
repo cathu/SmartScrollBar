@@ -26,11 +26,20 @@ class MainActivity : AppCompatActivity() {
 		list.adapter = adapter
 		list.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
 
-		scrollBar.bindScrollView(list)
-		scrollBar.setCustomBackground({w,h->
+		loadScrollBar()
+		initViews()
+	}
+
+	private fun loadScrollBar() {
+		//	scrollBar1
+		scrollBar1.bindScrollView(list)
+		scrollBar1.setCustomBackground({w,h->
 			RectF(10f,0f, (w-10).toFloat(), h.toFloat())
 		},20f, Color.BLUE)
-		initViews()
+		//	scrollBar2
+		scrollBar2.bindScrollView(list)
+		//	scrollBar3
+		scrollBar3.bindScrollView(list)
 	}
 
 	private fun initViews() {

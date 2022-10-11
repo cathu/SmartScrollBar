@@ -38,7 +38,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <com.cathu.core.SmartScrollBar
-        android:id="@+id/scrollBar"
+        android:id="@+id/scrollBar1"
         android:layout_width="40dp"
         android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,6 +49,42 @@
         app:smart_cant_scroll_style="dismiss_invisible"
         app:smart_orientation="vertical"
         app:smart_slider_color="#494949"
+        app:smart_background_corner="10dp"
+        app:smart_slider_corner="10dp"
+        app:smart_slider_style="固定大小"
+        app:smart_slider_length="20%"
+        app:smart_enable_drag="true"/>
+
+    <com.cathu.core.SmartScrollBar
+        android:id="@+id/scrollBar2"
+        android:layout_width="40dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toEndOf="@+id/scrollBar1"
+        app:layout_constraintTop_toTopOf="@+id/scrollBar1"
+        android:layout_marginStart="12dp"
+        app:smart_can_scroll_style="always_show"
+        app:smart_cant_scroll_style="dismiss_invisible"
+        app:smart_orientation="vertical"
+        app:smart_slider_color="#494949"
+        android:background="#BFBFBF"
+        app:smart_background_corner="10dp"
+        app:smart_slider_corner="10dp"
+        app:smart_slider_style="固定大小"
+        app:smart_slider_length="20%"
+        app:smart_enable_drag="true"/>
+
+    <com.cathu.core.SmartScrollBar
+        android:id="@+id/scrollBar3"
+        android:layout_width="40dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toEndOf="@+id/scrollBar2"
+        app:layout_constraintTop_toTopOf="@+id/scrollBar2"
+        android:layout_marginStart="12dp"
+        app:smart_can_scroll_style="dismiss_awhile"
+        app:smart_cant_scroll_style="dismiss_invisible"
+        app:smart_orientation="vertical"
+        app:smart_slider_color="#494949"
+        android:background="#BFBFBF"
         app:smart_background_corner="10dp"
         app:smart_slider_corner="10dp"
         app:smart_slider_style="固定大小"

@@ -9,7 +9,6 @@ import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.graphics.toRect
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cathu.core.orientation.IOrientationStrategy
 import java.lang.Exception
