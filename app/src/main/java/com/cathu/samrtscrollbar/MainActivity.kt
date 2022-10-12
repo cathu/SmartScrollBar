@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 		scrollBar2.bindScrollView(list)
 		//	scrollBar3
 		scrollBar3.bindScrollView(list)
+		//	scrollBar4
+		scrollBar4.bindScrollView(list)
 	}
 
 	private fun initViews() {

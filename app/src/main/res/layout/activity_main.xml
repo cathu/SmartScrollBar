@@ -91,4 +91,21 @@
         app:smart_slider_length="20%"
         app:smart_enable_drag="true"/>
 
+    <com.cathu.core.SmartScrollBar
+        android:id="@+id/scrollBar4"
+        android:layout_width="40dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toEndOf="@+id/scrollBar3"
+        app:layout_constraintTop_toTopOf="@+id/scrollBar3"
+        android:layout_marginStart="12dp"
+        app:smart_can_scroll_style="always_show"
+        app:smart_cant_scroll_style="visible"
+        app:smart_orientation="vertical"
+        app:smart_slider_color="#494949"
+        android:background="#BFBFBF"
+        app:smart_background_corner="10dp"
+        app:smart_slider_corner="10dp"
+        app:smart_slider_style="倍数缩放"
+        app:smart_enable_drag="true"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
