@@ -79,6 +79,9 @@ class SmartScrollBar : View {
         isAntiAlias = true
     } }
 
+    //  <ScrollingView 滚动的类型>
+    private var scrollType = SCROLL_TYPE_SMOOTH
+
     private val gestureDetector by lazy { GestureDetector(context, gestureListener).apply {
         setIsLongpressEnabled(false)
         this::class.java.getDeclaredField("mTouchSlopSquare").apply { isAccessible = true }.set(this,0)
@@ -289,12 +292,31 @@ class SmartScrollBar : View {
     }
 
 
+    /**
+     *  <设置自定义背景>
+     */
     fun setCustomBackground(holderWH: (Int,Int) -> RectF, corner: Float, @ColorInt color: Int) {
         post {
             this.customBgRectF.set(holderWH.invoke(width,height))
             this.customBgCorner = corner
             customBgPaint.color = color
         }
+    }
+
+
+    /**
+     *  <设置 ScrollingView 滚动的类型>
+     *  @see [SCROLL_TYPE_SMOOTH] [SCROLL_TYPE_ITEM]
+     *  @suggestion 如果项目比较少建议使用[SCROLL_TYPE_SMOOTH]，如果项目比较多建议使用[SCROLL_TYPE_ITEM]。
+     *  因为[SCROLL_TYPE_SMOOTH]会更流畅，但是如果项目过多（例如有10000个项目），就会造成卡顿，卡顿的原因是
+     *  [RecyclerView.scrollBy]耗时较长，而如果项目较小且使用[SCROLL_TYPE_ITEM]，那么滑动的时候由于
+     *  [LayoutManager.scrollToPosition] 的机制问题，前几项不会有反应。
+     */
+    fun setScrollingType(type: Int){
+        if (type != SCROLL_TYPE_SMOOTH && type != SCROLL_TYPE_ITEM){
+            throw IllegalArgumentException("Please use [SmartScrollBar.SCROLL_TYPE_ITEM] or [SmartScrollBar.SCROLL_TYPE_SMOOTH]")
+        }
+        this.scrollType = type
     }
 
     /**
@@ -316,7 +338,10 @@ class SmartScrollBar : View {
     }
 
 
-    private var lastRatio = 0f
+    //  <ScrollingView 整体的比率(即当前可见项占 ScrollingView 的比率)>
+    private var firstRatio: Float? = null
+    //  <ScrollingView offset的比率>
+    private var lastOffsetRatio = 0f
     private var isTouched: Boolean? = null
 
     /**
@@ -327,7 +352,8 @@ class SmartScrollBar : View {
 
         override fun onDown(e: MotionEvent): Boolean {
             if (e.action == MotionEvent.ACTION_DOWN) {
-                lastRatio = 0f
+                firstRatio = null
+                lastOffsetRatio = 0f
                 isTouched = null
             }
             return enableDrag
@@ -346,18 +372,35 @@ class SmartScrollBar : View {
 
             if (isTouched == true) {
                 //Log.e(TAG,"触摸到Slider")
-                //  <warn:不能使用[distanceX/Y]>
                 bindView?.let {
                     val barLength: Int
                     val offsetRatio:Float
                     if (orientation == VERTICAL) {
                         barLength = height - sliderRegion.bounds.height()
+                        if (firstRatio == null) {
+                            firstRatio = sliderRegion.bounds.top.toFloat() / barLength
+                        }
                         offsetRatio = (e2.y - e1.y) / barLength
                     } else {
                         barLength = width - sliderRegion.bounds.width()
+                        if (firstRatio == null) {
+                            firstRatio = sliderRegion.bounds.left.toFloat() / barLength
+                        }
                         offsetRatio = (e2.x - e1.x) / barLength
                     }
-                    scrollRecyclerView2(offsetRatio)
+                    
+                    if (scrollType == SCROLL_TYPE_SMOOTH){
+                        scrollRecyclerViewByDistance(offsetRatio)
+                    }else{
+                        var ratio = (firstRatio ?: 0f) + offsetRatio
+                        if (ratio <= 0) {
+                            ratio = 0f
+                        }
+                        if (ratio >= 1f) {
+                            ratio = 1f
+                        }
+                        scrollRecyclerViewByPosition(ratio)
+                    }
                 }
                 return true
             }
@@ -367,22 +410,44 @@ class SmartScrollBar : View {
 
 
     /**
-     *  <滚动 RecyclerView>
+     *  <滚动 RecyclerView：滚动距离>
      */
-    private fun scrollRecyclerView2(offsetRatio: Float) {
+    private fun scrollRecyclerViewByDistance(offsetRatio: Float) {
         bindView?.adapter?:return
         bindView?.layoutManager?:return
         if (orientation == VERTICAL){
-            bindView!!.scrollBy(0, ((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.height) * (offsetRatio - lastRatio)).roundToInt())
+            bindView!!.scrollBy(0, ((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.height) * (offsetRatio - lastOffsetRatio)).roundToInt())
         }else{
-            bindView!!.scrollBy(((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.width) * (offsetRatio - lastRatio)).roundToInt(),0)
+            bindView!!.scrollBy(((orientationHandler.computeRecyclerViewTotalLength(bindView!!) - bindView!!.width) * (offsetRatio - lastOffsetRatio)).roundToInt(),0)
         }
-        lastRatio = offsetRatio
+        lastOffsetRatio = offsetRatio
+    }
+
+    /**
+     *  <滚动 RecyclerView：以项为单位>
+     */
+    fun scrollRecyclerViewByPosition(ratio: Float) {
+        bindView?.adapter?:return
+        bindView?.layoutManager?:return
+        val position = bindView?.adapter!!.itemCount - 1
+        val transRatio = if (ratio < 0){
+            0f
+        }else if (ratio >= 1){
+            1f
+        }else{
+            ratio
+        }
+
+        bindView?.layoutManager!!.scrollToPosition(((position * transRatio).toInt()))
     }
 
 
     companion object {
         const val VERTICAL = LinearLayout.VERTICAL
         const val HORIZONTAL = LinearLayout.HORIZONTAL
+        //  <顺滑滚动>
+        const val SCROLL_TYPE_SMOOTH = 1
+        //  <以项滚动>
+        const val SCROLL_TYPE_ITEM = 2
     }
 }
