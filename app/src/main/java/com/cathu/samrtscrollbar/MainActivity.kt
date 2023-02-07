@@ -1,6 +1,5 @@
 package com.cathu.samrtscrollbar
 
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.RectF
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cathu.core.SmartScrollBar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity() {
 			}
 			data.removeAt(data.lastIndex)
 			adapter.notifyDataSetChanged()
+		}
+		changeScrollType.setOnClickListener {
+			scrollBar1.setScrollingType(SmartScrollBar.SCROLL_TYPE_ITEM)
 		}
 	}
 
