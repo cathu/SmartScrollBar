@@ -1,5 +1,5 @@
 # SamrtScrollBar
-[![](https://jitpack.io/v/cathu/SamrtScrollBar.svg)](https://jitpack.io/#cathu/SamrtScrollBar)
+[![](https://jitpack.io/v/cathu/SmartScrollBar.svg)](https://jitpack.io/#cathu/SmartScrollBar)
 [![](https://img.shields.io/badge/%E5%8D%9A%E5%AE%A2-Cathu-brightgreen)](https://blog.csdn.net/catzifeng)
 
 Android ScrollBar,自定义性极强的滚动条。
@@ -22,7 +22,7 @@ allprojects {
 **Step 2.** 添加依赖
 ```kotlin
 dependencies {
-	implementation 'com.github.cathu:SamrtScrollBar:0.1.1'
+	implementation 'com.github.cathu:SamrtScrollBar:0.1.2'
 }
 ```
 
