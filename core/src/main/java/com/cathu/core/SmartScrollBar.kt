@@ -377,12 +377,18 @@ class SmartScrollBar : View {
                     val offsetRatio:Float
                     if (orientation == VERTICAL) {
                         barLength = height - sliderRegion.bounds.height()
+                        if (barLength == 0){
+                            return true
+                        }
                         if (firstRatio == null) {
                             firstRatio = sliderRegion.bounds.top.toFloat() / barLength
                         }
                         offsetRatio = (e2.y - e1.y) / barLength
                     } else {
                         barLength = width - sliderRegion.bounds.width()
+                        if (barLength == 0){
+                            return true
+                        }
                         if (firstRatio == null) {
                             firstRatio = sliderRegion.bounds.left.toFloat() / barLength
                         }
