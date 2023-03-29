@@ -22,7 +22,7 @@ allprojects {
 **Step 2.** 添加依赖
 ```kotlin
 dependencies {
-	implementation 'com.github.cathu:SamrtScrollBar:+'
+	implementation 'com.github.cathu:SmartScrollBar:+'
 }
 ```
 
