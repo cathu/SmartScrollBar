@@ -1,4 +1,4 @@
-# SamrtScrollBar
+# SmartScrollBar
 [![](https://jitpack.io/v/cathu/SmartScrollBar.svg)](https://jitpack.io/#cathu/SmartScrollBar)
 [![](https://img.shields.io/badge/%E5%8D%9A%E5%AE%A2-Cathu-brightgreen)](https://blog.csdn.net/catzifeng)
 
